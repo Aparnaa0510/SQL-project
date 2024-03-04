@@ -1,0 +1,556 @@
+PROJECT 1 
+...........
+
+AVERAGE SELLING PRICE
+........................................................................
+
+create table product(
+Product_id int not NULL,
+Product_name varchar(255) not NULL,
+Selling_price float not NULL
+)
+
+
+SELECT * from product
+
+insert into product(
+Product_id,
+Product_name,
+Selling_price
+)
+values 
+(1,'ProductA',100.00),
+(2,'ProductB',150.00),
+(1,'ProductA',120.00),
+(3,'ProductC',200.00),
+(2,'ProductB',180.00),
+(1,'ProductA',90.00),
+(3,'ProductC',210.00);
+
+
+SELECT Product_name,(avg(Selling_price)) as Average_selling_Price FROM "public"."product"
+group by Product_name
+ORDER by Product_name;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+PROJECT 2
+...........
+
+BANK ACCOUNT SUMMARY
+....................................................................
+
+
+CREATE  TABLE accounts (
+Account_Number int not NULL,
+Account_holdername VARCHAR(255) not NULL,
+Transaction_date date not NULL,
+Transaction_type VARCHAR(255) not null,
+Transaction_amount DECIMAL(10,2) not NULL
+)
+
+SELECT * from accounts
+
+INSERT INTO accounts
+(
+Account_Number ,
+Account_holdername,
+Transaction_date,
+Transaction_type,
+Transaction_amount
+)
+VALUES
+(1001,'Ravi sharma','2023-07-01','Deposit',5000.00),
+(1001,'Ravi sharma','2023-07-05','Withdrawal',1000.00),
+(1001,'Ravi sharma','2023-07-10','Deposit',2000.00),
+(1002,'Priya Gupta','2023-07-02','Deposit',3000.00),
+(1002,'Priya Gupta','2023-07-08','Withdrawal',500.00),
+(1003,'Vikram Patel','2023-07-04','Deposit',10000.00),
+(1003,'Vikram Patel','2023-07-09','Withdrawal',2000.00)
+;
+
+
+SELECT Account_holdername, Account_Number, sum (CASE when Transaction_type='Deposit' THEN Transaction_amount ELSE -Transaction_amount END) FROM accounts
+group by Account_Number,Account_holdername
+order BY Account_Number;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+PROJECT 3
+...............
+
+FIND CUSTOMERS WHO NEVER ORDER
+............................................................................
+
+
+CREATE  TABLE customers
+(
+id INT not null,
+customername VARCHAR(255) not NULL
+)
+
+INSERT INTO customers
+(
+id,customername
+)
+values 
+(1,'Joe'),
+(2,'Henry'),
+(3,'Sam'),
+(4,'Max');
+
+
+SELECT * from customers
+
+CREATE table orders
+(
+id int not NULL,
+customerid int not null
+)
+
+INSERT into orders
+(
+id,customerid
+)
+values 
+(2,1),
+(1,3);
+
+select * FROM orders
+
+select customername from customers
+where not exists (SELECT 1 from orders where customerid = customers.id);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+PROJECT 4
+............
+
+MARKET ANALYSIS
+....................................................................
+
+ 
+
+CREATE  TABLE market
+(
+customerid int not NULL,
+productid VARCHAR(255) not NULL,
+purchasedate date not NULL,
+quantity int not null,
+revenue int not NULL
+)
+
+
+SELECT * from market
+
+INSERT into market 
+(
+customerid,
+productid
+purchasedate
+quantity
+revenue
+)
+
+VALUES
+(1,'A','2023-01-01'::date,5,100.00),
+(2,'B','2023-01-02'::date,3,50.00),
+(3,'A','2023-01-03'::date,2,30.00),
+(4,'C','2023-01-03'::date,1,20.00),
+(1,'B','2023-01-04'::date,4,80.00);
+
+ 
+ SELECT sum(revenue) as Totalrevenue from market
+
+SELECT sum(quantity) as Totalquantity from market
+ group by productid
+
+ SELECT productid,sum(revenue)as TotalRevenue,sum(quantity) as Totalquantity from market
+ GROUP by (productid)
+ORDER by productid
+
+
+ SELECT customerid,sum(revenue) as Totalrevenue FROM market
+ GROUP by customerid
+ order by sum(revenue) dESC
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+PROJECT 5
+............
+
+PRODUCT SALES ANALYSIS
+...........................................................................
+
+
+CREATE  table products
+(
+productname VARCHAR(255) not NULl,
+price decimal(10,2) not null
+)
+
+INSERT into products
+(
+productname,price
+)
+VALUES
+('Apple',2.50),
+('Banana',1.50),
+('Orange',3.00),
+('Mango',2.00);
+
+SELECT * from products
+
+CREATE table orders
+(
+orderid serial primary KEY,
+productid int not NULL,
+quantity int not null,
+sales decimal(10,2)
+)
+
+INSERT into orders
+(
+productid,
+quantity,
+sales
+)
+
+VALUES
+(1,10,25.00),
+(1,5,12.50),
+(2,8,12.00),
+(3,12,36.00),
+(4,6,12.00);
+
+SELECT * from orders
+
+
+SELECT p.productname,sum(p.price*o.quantity) as totalrevenue
+from products as p join orders as o on p.product_id = o.productid
+GROUP by p.productname
+order by totalrevenue desc;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROJECT 6
+.............
+
+TOP PERFORMING AD
+..................................................................................
+
+create table ad
+(
+adid int not null,
+viewss int not NULL,
+clicks int not NULL,
+costt decimal(10,2) not NULL
+)
+insert into ad
+(
+adid,
+viewss,
+clicks,
+costt
+)
+VALUES
+(1,1000,50,20.5),
+(2,800,30,15.2),
+(3,1200,80,25.7),
+(4,600,20,10.9),
+(5,1500,120,40.3);\
+
+select * from ad
+
+select *,concat(round(clicks::decimal/viewss*100,1),'%') as CTR from ad
+order by CTR
+desc
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROJECT 7
+.............
+
+DELETE DUPLICATE EMAILS
+............................................................................
+
+CREATE  table emails
+(
+id int not NULL,
+namee varchar(255) not null,
+email varchar(255) not null,
+phone float not null
+)
+insert into emails
+(
+id,
+namee,
+email,
+phone
+)
+VALUES
+(1,'rahul','rahul@exmple.com',9839473902),
+(2,'rohit','rohit@example.com',9883782971),
+(3,'suresh','rahul@exmple.com',7654321098),
+(4,'manish','manish@example.com',8927394619),
+(5,'amit','amit@example.com',9399303840),
+(6,'rahul','rahul@exmple.com',9737466147);
+
+SELECT * from emails
+
+
+create view duplicate as 
+select id,email,row_number() over(PARTITION by email order by id) as row_num from emails;
+
+DELETE  from emails
+where id IN
+(SELECT id from duplicate where row_num>1);
+
+
+select * from emails
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROJECT 8
+............
+
+FIX NAMES IN A TABLE
+..........................................................................
+
+
+create table namess
+(
+name VARCHAR(255)
+)
+INSERT into namess
+(
+name
+)
+values 
+('rAVI KUMAR'),
+('priya sharma'),
+('amit PATEL'),
+('NEHA gupta');
+
+SELECT  * from namess
+
+
+UPDATE namess
+set name = initcap(name);
+
+select * from namess
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROJECT 9
+.............
+
+USER ENGAGEMENT ANALYSIS
+..............................................................................................
+
+
+CREATE  table posts
+(
+post_id int not NULL,
+post_content varchar(255) not null,
+post_date TIMESTAMP not NULL
+)
+insert into posts
+(
+post_id,
+post_content,
+post_date
+)
+VALUES
+(1,'Lorem ipsum dolor sit amet','2023-08-25 10:00:00'),
+(2,'Exploring the beauty of nature','2023-08-26 15:30:00'),
+(3,'Unveiling the latest tech trends','2023-08-27 12:00:00'),
+(4,'Journey into the world of literature','2023-08-28 09:45:00'),
+(5,'Capturing the essence of city life','2023-08-29 16:20:00');
+
+SELECT * from posts
+
+CREATE table userreaction
+(
+reaction_id int not NULL,
+user_id int not null,
+post_id int not null,
+reaction_type varchar(255),
+reaction_date TIMESTAMP 
+)
+insert into userreaction
+(reaction_id,
+user_id,
+post_id,
+reaction_type,
+reaction_date
+)
+VALUES
+(1,101,1,'like','2023-08-25 10:15:00'),
+(2,102,1,'comment','2023-08-25 11:30:00'),
+(3,103,1,'share','2023-08-26 12:45:00'),
+(4,101,2,'like','2023-08-26 15:45:00'),
+(5,102,2,'comment','2023-08-27 09:20:00'),
+(6,104,2,'like','2023-08-27 10:00:00'),
+(7,105,3,'comment','2023-08-27 14:30:00'),
+(8,101,3,'like','2023-08-28 08:15:00'),
+(9,103,4,'like','2023-08-28 10:30:00'),
+(10,105,4,'share','2023-08-29 11:15:00'),
+(11,104,5,'like','2023-08-29 16:30:00 '),
+(12,101,5,'comment','2023-08-30 09:45:00');
+
+SELECT * FROM userreaction
+
+SELECT p.post_id,p.post_content,
+sum(CASE WHEN r.reaction_type='like' then  1 else 0 end)as num_like,
+sum(case when r.reaction_type='comment' then 1 else 0 END)as num_comment,
+sum(case when r.reaction_type='share' THEN 1 else 0 end)as num_sharee
+FROM posts p
+inner join 
+userreaction r on p.post_id = r.post_id
+where p.post_id = 2
+group by p.post_id,p.post_content;
+
+
+
+
+
+select date(reaction_date) as reaction_day,
+count(DISTINCT ur.user_id) as distinct_users,
+count(*) as total_reactions,
+avg(count(*)) over (partition by Date(reaction_date)) as avg_reactions_per_user
+from userreaction ur
+where 
+reaction_date >= '2023-08-25' and reaction_date <= '2023-08-30'
+group by date(reaction_date);
+
+
+
+
+select p.post_id,p.post_content,
+sum(CASE WHEN reaction_type='like' then  1 ELSE 0 end+
+case when reaction_type='comment' then 1 else 0 END+
+case when reaction_type='share' THEN 1 else 0 end) as total_reactions
+from posts p 
+inner join 
+userreaction r on p.post_id = r.post_id
+where p.post_date >= '2023-08-25' and p.post_date <= '2023-08-30'
+group by p.post_id,p.post_content
+order by total_reactions DESC
+limit 3;
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROJECT 10
+..............
+
+RIDE CANCELLATION RATE
+......................................................................................
+
+
+create table trips
+(
+id serial primary KEY,
+client_id int not null,
+driver_id int not null,
+city_id int not null,
+status varchar(255) not null,
+request_at timestamp not NULL
+)
+
+insert into trips
+(
+client_id,
+driver_id,
+city_id,
+status,
+request_at
+)
+VALUES
+(1,10,1,'completed','2023-07-12'),
+(2,11,1,'cancelled_by_driver','2023-07-12'),
+(3,12,6,'completed','2023-07-12'),
+(4,13,6,'cancelled_by_client','2023-07-12'),
+(1,10,1,'completed','2023-07-13'),
+(2,11,6,'completed','2023-07-13'),
+(3,12,6,'completed','2023-07-13'),
+(2,12,12,'completed','2023-07-14'),
+(3,10,12,'completed','2023-07-14'),
+(4,13,12,'cancelled_by_driver','2023-07-14');
+
+SELECT  * from trips
+
+CREATE table users
+(
+users_id int not NULL,
+banned varchar(255),
+roles varchar(255)
+)
+
+INSERT into users
+(
+users_id,
+banned,
+roles 
+)
+values 
+(1,'no','client'),
+(2,'yes','client'),
+(3,'no','client'),
+(4,'no','client'),
+(10,'no','driver'),
+(11,'no','driver'),
+(12,'no','driver'),
+(13,'no','driver');
+
+select * from users
+
+
+create view unbanned_trips as
+
+(select request_at,
+count(case when status like 'cancelled%' then 1 end) as cancelled_request,
+count(*) as total_request
+from trips as t
+
+join users u1 on t.client_id = u1.users_id
+join users u2 on  t.driver_id = u2.users_id
+
+where u1.banned='no' and u2.banned='no'
+
+group by  request_at);
+
+SELECT request_at,cancelled_request * 1.0/total_request as cancellation_rate from unbanned_trips
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
